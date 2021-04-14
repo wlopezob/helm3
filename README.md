@@ -1,3 +1,3 @@
 # Tutoriales HELM3
-> helm con un app en angular llamado [minetflix](minetflix/README.md)
+> App en angular: [minetflix](minetflix/README.md)
 
