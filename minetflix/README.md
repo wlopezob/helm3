@@ -36,3 +36,30 @@ tree
     └── values.yaml
 
 ```
+#### El archivo values.yaml contiene todos las variables y valores de nuestras plantillas
+#### La carpeta templates contiene las plantillas de nuesta aplicacion
+#### Modificamos el archivo deployment.yaml, para este ejemplo modificamos el nombre de la imagen y quitando **:{{ .Chart.AppVersion }}** para poder controlar nuestras versiones(se podria automatizar las versiones, queda pendiente este tema)
+```
+vim minetflix-chart/templates/deployment.yaml
+
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}"
+```
+#### Modificamos el nombre de nuestra imagen del archio value.yaml
+```
+vim minetflix-chart/values.yaml
+
+image:
+  repository: localhost:32000/minetflix:latest
+  pullPolicy: IfNotPresent
+
+
+```
+#### tambien habilitamos la creacion del ingress, enabled: true
+```
+ingress:
+  enabled: true
+```
