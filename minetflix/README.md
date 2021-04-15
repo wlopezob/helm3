@@ -48,7 +48,7 @@ vim minetflix-chart/templates/deployment.yaml
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}"
 ```
-#### Modificamos el nombre de nuestra imagen del archio value.yaml
+#### Modificamos el nombre de nuestra imagen del archivo value.yaml
 ```
 vim minetflix-chart/values.yaml
 
