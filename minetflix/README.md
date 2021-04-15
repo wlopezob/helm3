@@ -58,8 +58,65 @@ image:
 
 
 ```
-#### tambien habilitamos la creacion del ingress, enabled: true
+#### habilitamos la creacion del ingress y añadimos el path "/"
 ```
 ingress:
   enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: ["/"]
+
+```
+#### Modificamos el template del ingress para ingresar al app mediante el path "/" y no ingresar mediante dominio, para ello comentamos
+#### - host: {{ .host | quote }} y añadimos el "-" al http, quedando: 
+```
+vim minetflix-chart/templates/ingress.yaml
+ 
+  rules:
+  {{- range .Values.ingress.hosts }}
+  #- host: {{ .host | quote }}
+    - http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+
+```
+#### Instalamos nuestra app como vista preliminar y observar los manifiestos, si el app ya existe en vez de install podemos usar  upgrade
+```
+microk8s.helm3 install --dry-run --debug minetflix-chart minetflix-chart/
+```
+#### Instalamos nuestra app con el nombre de  minetflix-chart
+```
+microk8s.helm3 install minetflix-chart minetflix-chart/
+```
+#### Observamos el listado de todos los recursos creados
+```
+microk8s.kubectl get all
+
+NAME                                   READY   STATUS    RESTARTS   AGE
+pod/minetflix-chart-599c864dcf-tk4h5   1/1     Running   0          3m10s
+
+NAME                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes        ClusterIP   10.152.183.1    <none>        443/TCP   3h54m
+service/minetflix-chart   ClusterIP   10.152.183.26   <none>        80/TCP    3m10s
+
+NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/minetflix-chart   1/1     1            1           3m10s
+
+NAME                                         DESIRED   CURRENT   READY   AGE
+replicaset.apps/minetflix-chart-599c864dcf   1         1         1       3m10s
+
+``` 
+
+#### Probando el app minetflix
+```
+curl -kL http://{miippublica}/
 ```
