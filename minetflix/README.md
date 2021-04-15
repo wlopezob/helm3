@@ -115,6 +115,14 @@ NAME                                         DESIRED   CURRENT   READY   AGE
 replicaset.apps/minetflix-chart-599c864dcf   1         1         1       3m10s
 
 ``` 
+#### Listamos el ingress
+```
+microk8s.kubectl get ingress
+
+NAME              CLASS    HOSTS   ADDRESS     PORTS   AGE
+minetflix-chart   public   *       127.0.0.1   80      22m
+
+```
 
 #### Probando el app minetflix
 ```
